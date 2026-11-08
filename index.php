@@ -8,7 +8,8 @@ $result_kategori = mysqli_query($conn, $query_kategori);
 
 // Filter & Pencarian (Nama / Barcode)
 $search = isset($_GET['search']) ? mysqli_real_escape_string($conn, trim($_GET['search'])) : '';
-$kategori_filter = isset($_GET['kategori']) ? (int)$_GET['kategori'] : '';
+// PERBAIKAN BUG: Pastikan parameter tidak kosong sebelum di-cast ke int
+$kategori_filter = (isset($_GET['kategori']) && $_GET['kategori'] !== '') ? (int)$_GET['kategori'] : '';
 
 $query_produk = "SELECT p.*, c.nama_kategori 
                  FROM products p 
@@ -47,7 +48,7 @@ include 'includes/header.php';
             <select name="kategori" onchange="this.form.submit()" style="padding: 10px; border: 1.5px solid #ddd; border-radius: 8px; outline: none; font-size: 14px;">
                 <option value="">Semua Kategori</option>
                 <?php while ($cat = mysqli_fetch_assoc($result_kategori)) : ?>
-                    <option value="<?php echo $cat['id_kategori']; ?>" <?php echo ($kategori_filter == $cat['id_kategori']) ? 'selected' : ''; ?>>
+                    <option value="<?php echo $cat['id_kategori']; ?>" <?php echo ($kategori_filter === $cat['id_kategori']) ? 'selected' : ''; ?>>
                         <?php echo htmlspecialchars($cat['nama_kategori']); ?>
                     </option>
                 <?php endwhile; ?>
