@@ -1,4 +1,5 @@
 <?php
+ob_start();
 include 'header_admin.php';
 require_once '../config/database.php';
 
@@ -102,6 +103,12 @@ $products = mysqli_query($conn, $query_produk);
 <h2>Kelola Produk & Barcode Scanner</h2>
 <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Support USB Scanner, Scanner Kamera HP / WebCam, & Auto-Lookup API.</p>
 
+<?php if (isset($_GET['pesan'])) : ?>
+    <div style="background: #d4edda; color: #155724; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
+        ✅ <?php echo htmlspecialchars($_GET['pesan']); ?>
+    </div>
+<?php endif; ?>
+
 <?php if ($sukses) : ?>
     <div style="background: #d4edda; color: #155724; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
         ✅ <?php echo htmlspecialchars($sukses); ?>
@@ -189,7 +196,7 @@ $products = mysqli_query($conn, $query_produk);
                     <td>Rp <?php echo number_format($p['harga'], 0, ',', '.'); ?></td>
                     <td><?php echo $p['stok']; ?></td>
                     <td>
-                        <button onclick='openPrintBarcodeModal("<?php echo htmlspecialchars($p['nama_produk']); ?>", "<?php echo htmlspecialchars($p['barcode']); ?>", "<?php echo number_format($p['harga'], 0, ',', '.'); ?>")' class="btn-action btn-detail" style="border: none; cursor: pointer;">🏷️ Label</button>
+                        <button type="button" onclick='openPrintBarcodeModal("<?php echo htmlspecialchars($p['nama_produk']); ?>", "<?php echo htmlspecialchars($p['barcode']); ?>", "<?php echo number_format($p['harga'], 0, ',', '.'); ?>")' class="btn-action btn-detail" style="border: none; cursor: pointer;">🏷️ Label</button>
                         <a href="javascript:void(0)" onclick='openEditModal(<?php echo json_encode($p); ?>)' class="btn-action btn-edit">Edit</a>
                         <a href="produk.php?hapus=<?php echo $p['id_produk']; ?>" class="btn-action btn-delete" onclick="return confirm('Yakin hapus produk ini?')">Hapus</a>
                     </td>
@@ -228,8 +235,8 @@ $products = mysqli_query($conn, $query_produk);
         </div>
 
         <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
-            <button onclick="printBarcodeLabel()" class="btn-add" style="margin: 0; border: none; cursor: pointer;">🖨️ Cetak</button>
-            <button onclick="closeBarcodeModal()" style="padding: 8px 15px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Tutup</button>
+            <button type="button" onclick="printBarcodeLabel()" class="btn-add" style="margin: 0; border: none; cursor: pointer;">🖨️ Cetak</button>
+            <button type="button" onclick="closeBarcodeModal()" style="padding: 8px 15px; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">Tutup</button>
         </div>
     </div>
 </div>
@@ -322,20 +329,23 @@ window.lookupBarcodeAPI = async function(inputId, targetNameId, btnId) {
             if (productName) {
                 nameInput.value = productName;
             } else {
+                alert('Nama produk tidak ditemukan di API publik.');
                 nameInput.focus();
             }
         } else {
+            alert('Kode barcode tidak terdaftar di database API publik. Silakan ketik nama manual.');
             nameInput.focus();
         }
     } catch (error) {
         console.error('API Lookup Error:', error);
+        alert('Gagal terhubung ke API eksternal.');
         nameInput.focus();
     } finally {
         if (btn) btn.innerHTML = originalText;
     }
 };
 
-// 3. SCANNER KAMERA HP (OPTIMASI BARCODE GARIS 1D)
+// 3. SCANNER KAMERA HP / WEBCAM (Tombol 📷)
 let html5QrCode = null;
 
 window.startCameraScanner = function(targetInputId, targetNameId, btnId) {
@@ -344,55 +354,63 @@ window.startCameraScanner = function(targetInputId, targetNameId, btnId) {
         return;
     }
 
-    document.getElementById('modalCamera').style.display = 'flex';
+    const modal = document.getElementById('modalCamera');
+    if (modal) modal.style.display = 'flex';
 
-    // Spesifikasikan format Barcode 1D agar fokus membaca garis minimarket
-    const formatsToSupport = [
-        Html5QrcodeSupportedFormats.EAN_13,
-        Html5QrcodeSupportedFormats.EAN_8,
-        Html5QrcodeSupportedFormats.CODE_128,
-        Html5QrcodeSupportedFormats.CODE_39,
-        Html5QrcodeSupportedFormats.UPC_A,
-        Html5QrcodeSupportedFormats.UPC_E,
-        Html5QrcodeSupportedFormats.QR_CODE
-    ];
+    try {
+        let config = { 
+            fps: 20, 
+            qrbox: { width: 280, height: 130 },
+            experimentalFeatures: { useBarCodeDetectorIfSupported: true }
+        };
 
-    html5QrCode = new Html5Qrcode("camera-preview", { formatsToSupport: formatsToSupport });
-    
-    const config = { 
-        fps: 20, 
-        qrbox: { width: 280, height: 130 },
-        experimentalFeatures: {
-            useBarCodeDetectorIfSupported: true
+        if (typeof Html5QrcodeSupportedFormats !== 'undefined') {
+            const formatsToSupport = [
+                Html5QrcodeSupportedFormats.EAN_13,
+                Html5QrcodeSupportedFormats.EAN_8,
+                Html5QrcodeSupportedFormats.CODE_128,
+                Html5QrcodeSupportedFormats.CODE_39,
+                Html5QrcodeSupportedFormats.UPC_A,
+                Html5QrcodeSupportedFormats.UPC_E,
+                Html5QrcodeSupportedFormats.QR_CODE
+            ];
+            html5QrCode = new Html5Qrcode("camera-preview", { formatsToSupport: formatsToSupport });
+        } else {
+            html5QrCode = new Html5Qrcode("camera-preview");
         }
-    };
 
-    html5QrCode.start(
-        { facingMode: "environment" },
-        config,
-        (decodedText) => {
-            document.getElementById(targetInputId).value = decodedText;
-            if (navigator.vibrate) navigator.vibrate(200);
-            stopCameraScanner();
-            lookupBarcodeAPI(targetInputId, targetNameId, btnId);
-        },
-        () => {}
-    ).catch(err => {
-        alert("Gagal membuka kamera: " + err);
-        stopCameraScanner();
-    });
+        html5QrCode.start(
+            { facingMode: "environment" },
+            config,
+            (decodedText) => {
+                const targetInput = document.getElementById(targetInputId);
+                if (targetInput) targetInput.value = decodedText;
+                if (navigator.vibrate) navigator.vibrate(200);
+                window.stopCameraScanner();
+                window.lookupBarcodeAPI(targetInputId, targetNameId, btnId);
+            },
+            () => {}
+        ).catch(err => {
+            alert("Gagal membuka kamera: " + err);
+            window.stopCameraScanner();
+        });
+    } catch (e) {
+        alert("Terjadi masalah saat memulai kamera: " + e.message);
+        window.stopCameraScanner();
+    }
 };
 
 window.stopCameraScanner = function() {
+    const modal = document.getElementById('modalCamera');
     if (html5QrCode && html5QrCode.isScanning) {
         html5QrCode.stop().then(() => {
             html5QrCode.clear();
-            document.getElementById('modalCamera').style.display = 'none';
+            if (modal) modal.style.display = 'none';
         }).catch(() => {
-            document.getElementById('modalCamera').style.display = 'none';
+            if (modal) modal.style.display = 'none';
         });
     } else {
-        document.getElementById('modalCamera').style.display = 'none';
+        if (modal) modal.style.display = 'none';
     }
 };
 
@@ -405,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bcTambah.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                lookupBarcodeAPI('input_barcode_tambah', 'input_nama_tambah', 'btn_lookup_tambah');
+                window.lookupBarcodeAPI('input_barcode_tambah', 'input_nama_tambah', 'btn_lookup_tambah');
             }
         });
     }
@@ -414,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bcEdit.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                lookupBarcodeAPI('edit_barcode', 'edit_nama_produk', 'btn_lookup_edit');
+                window.lookupBarcodeAPI('edit_barcode', 'edit_nama_produk', 'btn_lookup_edit');
             }
         });
     }
@@ -476,4 +494,7 @@ function closeEditModal() {
 }
 </script>
 
-<?php include 'footer_admin.php'; ?>
+<?php 
+include 'footer_admin.php'; 
+ob_end_flush();
+?>
