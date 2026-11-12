@@ -5,8 +5,13 @@ if (session_status() === PHP_SESSION_NONE) {
 
 $cart_count = isset($_SESSION['cart']) ? array_sum($_SESSION['cart']) : 0;
 
-// Cek session login (Mendukung session 'user' atau 'customer' yang sudah ada)
-$user_session = $_SESSION['user'] ?? $_SESSION['customer'] ?? $_SESSION['login'] ?? null;
+// Ambil data session user/customer
+$user_session = $_SESSION['user'] ?? $_SESSION['customer'] ?? null;
+$is_admin = false;
+
+// Cek apakah role user adalah admin
+if (is_array($user_session) && isset($user_session['role']) && $user_session['role'] === 'admin') {$is_admin = true;
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -18,7 +23,6 @@ $user_session = $_SESSION['user'] ?? $_SESSION['customer'] ?? $_SESSION['login']
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f4f6f9; color: #333; }
         
-        /* Animation & Hover Effects */
         .btn-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: pointer; }
         .btn-lift:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 68, 148, 0.2); }
         .btn-lift:active { transform: translateY(0); }
@@ -51,19 +55,19 @@ $user_session = $_SESSION['user'] ?? $_SESSION['customer'] ?? $_SESSION['login']
             </a>
 
             <?php if ($user_session) : ?>
-                <!-- STATUS LOGGED IN -->
                 <span style="font-size: 13px; font-weight: 600; color: #e2e8f0;">
-                    👤 <?php echo htmlspecialchars(is_array($user_session) ? ($user_session['nama'] ?? $user_session['username'] ?? 'User') : $user_session); ?>
+                    👤 <?php echo htmlspecialchars(is_array($user_session) ? ($user_session['nama'] ?? 'Customer') :$user_session); ?>
                 </span>
                 
+                <?php if ($is_admin) : ?>
+                    <a href="admin/index.php" class="btn-press" style="color: #ffc107; text-decoration: none; font-size: 13px; font-weight: 600; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 6px;">⚙️ Admin Panel</a>
+                <?php endif; ?>
+
                 <a href="logout.php" class="btn-press" style="color: #f87171; text-decoration: none; font-size: 13px; font-weight: 600;" onclick="return confirm('Yakin ingin keluar?')">Logout</a>
             <?php else : ?>
-                <!-- STATUS LOGGED OUT -->
                 <a href="login.php" class="btn-press" style="color: white; text-decoration: none; font-size: 13px; font-weight: 600;">Login</a>
-                <a href="register.php" class="btn-lift" style="background: #ffffff; color: #004494; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold;">Daftar</a>
+                <a href="login.php?action=register" class="btn-lift" style="background: #ffffff; color: #004494; padding: 6px 14px; border-radius: 6px; text-decoration: none; font-size: 13px; font-weight: bold;">Daftar</a>
             <?php endif; ?>
-
-            <a href="admin/index.php" class="btn-press" style="color: #ffc107; text-decoration: none; font-size: 13px; font-weight: 600;">⚙️ Admin</a>
         </div>
     </div>
 </header>

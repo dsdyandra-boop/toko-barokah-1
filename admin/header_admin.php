@@ -2,6 +2,28 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+// Cek Role Admin secara Fleksibel
+$is_admin = false;
+
+if (isset($_SESSION['user'])) {
+    if (is_array($_SESSION['user'])) {
+        $role = $_SESSION['user']['role'] ?? $_SESSION['user']['level'] ?? '';
+        if ($role === 'admin') $is_admin = true;
+    } else if (is_string($_SESSION['user']) && strtolower($_SESSION['user']) === 'admin') {
+        $is_admin = true;
+    }
+}
+
+if (isset($_SESSION['admin']) || (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['level']) && $_SESSION['level'] === 'admin')) {
+    $is_admin = true;
+}
+
+// Jika bukan admin, tendang ke login.php
+if (!$is_admin) {
+    header("Location: ../login.php?error=" . urlencode("Akses ditolak! Halaman ini khusus Admin."));
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">

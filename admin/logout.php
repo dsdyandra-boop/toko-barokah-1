@@ -1,13 +1,20 @@
 <?php
-session_start();
-session_unset();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$_SESSION = array();
+
+if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
+}
+
 session_destroy();
 
-// Redirect ke halaman login admin (atau ke katalog toko jika login admin belum dibuat)
-if (file_exists('login.php')) {
-    header("Location: login.php?pesan=Anda telah berhasil logout");
-} else {
-    header("Location: ../index.php");
-}
+header("Location: ../login.php?pesan=" . urlencode("Berhasil logout admin"));
 exit;
 ?>
