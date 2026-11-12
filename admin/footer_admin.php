@@ -1,7 +1,7 @@
 </main>
 
     <footer style="text-align: center; padding: 20px; background: #fff; margin-top: 40px; border-top: 1px solid #eee;">
-        <p>&copy; <?php echo date('Y'); ?> TokoHarian Admin Panel. All rights reserved.</p>
+        <p>&copy; <?php echo date('Y'); ?> Toko Barokah 1Admin Panel. All rights reserved.</p>
     </footer>
 
     <!-- CDN SweetAlert2 -->

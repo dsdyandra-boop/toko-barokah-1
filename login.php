@@ -305,7 +305,7 @@ if (isset($_POST['login'])) {
             <div class="overlay">
                 <div class="overlay-panel overlay-left">
                     <h1>Selamat Datang Kembali!</h1>
-                    <p>Tetap terhubung, silakan login dengan informasi akun TokoHarian Anda.</p>
+                    <p>Tetap terhubung, silakan login dengan informasi akun Toko Barokah 1Anda.</p>
                     <button type="button" class="ghost" id="signIn">Masuk</button>
                 </div>
                 <div class="overlay-panel overlay-right">

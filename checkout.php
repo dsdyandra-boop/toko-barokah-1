@@ -93,7 +93,7 @@ include 'includes/header.php';
             <div style="font-size: 60px; margin-bottom: 10px;">🎉</div>
             <h2 style="color: #0f172a; margin-bottom: 8px;">Pesanan Berhasil Dibuat!</h2>
             <p style="color: #64748b; font-size: 15px; margin-bottom: 20px;">Nomor Pesanan Kamu: <strong style="color: #004494;">#ORD-<?php echo (int)$_GET['order_id']; ?></strong></p>
-            <p style="color: #475569; font-size: 14px; max-width: 500px; margin: 0 auto 25px auto;">Tim TokoHarian akan segera memproses pesanan kamu. Terima kasih sudah berbelanja!</p>
+            <p style="color: #475569; font-size: 14px; max-width: 500px; margin: 0 auto 25px auto;">Tim Toko Barokah 1akan segera memproses pesanan kamu. Terima kasih sudah berbelanja!</p>
             <a href="index.php" style="padding: 12px 28px; background: #004494; color: white; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px;">Kembali ke Katalog</a>
         </div>
     <?php else : ?>
@@ -147,7 +147,7 @@ include 'includes/header.php';
                         <!-- Menggunakan QR Code generator otomatis -->
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TOKOHARIAN-PAYMENT-QRIS" alt="QRIS TokoHarian" width="160" height="160">
                     </div>
-                    <p style="font-size: 12px; font-weight: bold; color: #004494; margin-top: 5px;">TokoHarian Official QRIS</p>
+                    <p style="font-size: 12px; font-weight: bold; color: #004494; margin-top: 5px;">Toko Barokah 1Official QRIS</p>
 
                     <div style="margin-top: 15px; text-align: left;">
                         <label style="font-size: 12px; font-weight: 700; color: #334155;">Upload Bukti Transfer / Capture QRIS:</label>

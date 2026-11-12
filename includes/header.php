@@ -9,7 +9,6 @@ $cart_count = isset($_SESSION['cart']) ? array_sum($_SESSION['cart']) : 0;
 $user_session = $_SESSION['user'] ?? $_SESSION['customer'] ?? null;
 $is_admin = false;
 
-// Cek apakah role user adalah admin
 if (is_array($user_session) && isset($user_session['role']) && $user_session['role'] === 'admin') {
     $is_admin = true;
 }
@@ -19,7 +18,7 @@ if (is_array($user_session) && isset($user_session['role']) && $user_session['ro
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TokoHarian - Minimarket E-Commerce</title>
+    <title>Toko Barokah 1 - Minimarket E-Commerce</title>
     <style>
         :root {
             --bg-offwhite: #f8faf9;
@@ -41,9 +40,7 @@ if (is_array($user_session) && isset($user_session['role']) && $user_session['ro
             font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             background-color: var(--bg-offwhite);
@@ -54,7 +51,6 @@ if (is_array($user_session) && isset($user_session['role']) && $user_session['ro
             line-height: 1.5;
         }
 
-        /* === NAVBAR MODERN MINIMALIST === */
         .site-header {
             background: rgba(255, 255, 255, 0.94);
             backdrop-filter: blur(10px);
@@ -183,9 +179,7 @@ if (is_array($user_session) && isset($user_session['role']) && $user_session['ro
             transition: background 0.2s ease;
         }
 
-        .nav-logout:hover {
-            background: #fef2f2;
-        }
+        .nav-logout:hover { background: #fef2f2; }
 
         .nav-btn-register {
             background: var(--forest-primary);
@@ -198,11 +192,8 @@ if (is_array($user_session) && isset($user_session['role']) && $user_session['ro
             box-shadow: 0 2px 8px rgba(21, 97, 69, 0.18);
         }
 
-        .nav-btn-register:hover {
-            background: var(--forest-dark);
-        }
+        .nav-btn-register:hover { background: var(--forest-dark); }
 
-        /* === BUTTON ANIMATIONS & HOVER EFFECTS === */
         .btn-lift {
             transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
             cursor: pointer;
@@ -211,20 +202,14 @@ if (is_array($user_session) && isset($user_session['role']) && $user_session['ro
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(21, 97, 69, 0.18);
         }
-        .btn-lift:active {
-            transform: translateY(0);
-        }
+        .btn-lift:active { transform: translateY(0); }
 
         .btn-press {
             transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease;
             cursor: pointer;
         }
-        .btn-press:hover {
-            transform: scale(1.03);
-        }
-        .btn-press:active {
-            transform: scale(0.96);
-        }
+        .btn-press:hover { transform: scale(1.03); }
+        .btn-press:active { transform: scale(0.96); }
 
         .btn-shine {
             position: relative;
@@ -251,19 +236,10 @@ if (is_array($user_session) && isset($user_session['role']) && $user_session['ro
         }
 
         @media (max-width: 640px) {
-            .site-header {
-                padding: 12px 16px;
-            }
-            .nav-brand {
-                font-size: 18px;
-            }
-            .nav-menu {
-                gap: 6px;
-            }
-            .nav-link {
-                padding: 6px 10px;
-                font-size: 13px;
-            }
+            .site-header { padding: 12px 16px; }
+            .nav-brand { font-size: 18px; }
+            .nav-menu { gap: 6px; }
+            .nav-link { padding: 6px 10px; font-size: 13px; }
         }
     </style>
 </head>
@@ -273,7 +249,7 @@ if (is_array($user_session) && isset($user_session['role']) && $user_session['ro
     <div class="nav-container">
         <a href="index.php" class="nav-brand btn-press">
             <span class="brand-icon">🛒</span>
-            <span>TokoHarian</span>
+            <span>Toko Barokah 1</span>
         </a>
 
         <nav class="nav-menu">
@@ -285,6 +261,8 @@ if (is_array($user_session) && isset($user_session['role']) && $user_session['ro
             </a>
 
             <?php if ($user_session) : ?>
+                <a href="pesanan_saya.php" class="nav-link btn-press">Pesanan Saya</a>
+
                 <span class="nav-user-pill">
                     👤 <?php echo htmlspecialchars(is_array($user_session) ? ($user_session['nama'] ?? 'Customer') : $user_session); ?>
                 </span>

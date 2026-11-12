@@ -76,7 +76,7 @@ if (!$is_admin) {
 <body>
 
 <div class="sidebar">
-    <h2>TokoHarian Admin</h2>
+    <h2>Toko Barokah 1Admin</h2>
     <ul>
         <li><a href="index.php">📊 Dashboard</a></li>
         <li><a href="produk.php">📦 Kelola Produk</a></li>
